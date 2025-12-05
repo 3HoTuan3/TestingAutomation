@@ -1,4 +1,4 @@
-import { Locator , Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 export class RegisterPage {
     private readonly page: Page;
@@ -11,11 +11,11 @@ export class RegisterPage {
     constructor(page: Page) {
         this.page = page;
         this.usernameTxt = this.page.getByRole('textbox', { name: 'Email' });
-        // this.usernameTxt = this.page.getByLabel('Email');
-        this.passwordTxt = this.page.getByLabel('Password');
-        this.confirmPasswordTxt = this.page.getByLabel('Confirm Password');
+        // use specific ids to avoid ambiguous labels
+        this.passwordTxt = this.page.locator('#password');
+        this.confirmPasswordTxt = this.page.locator('#confirmPassword');
         this.pidTxt = this.page.getByLabel('PID');
-        this.registerBtn = this.page.getByRole('button', { name: 'register' });
+        this.registerBtn = this.page.getByRole('button', { name: /register/i });
     }
 
     async register(username: string, password: string, confirmPassword: string, pid: string): Promise<void> {
@@ -27,6 +27,6 @@ export class RegisterPage {
     }
 
     async checkRegisterSuccess(): Promise<void> {
-        await this.page.waitForSelector('div#content:has-text("You\'re here")', {state: 'visible'});
+        await this.page.waitForSelector('div#content:has-text("You\'re here")', { state: 'visible' });
     }
 }
