@@ -2,7 +2,7 @@ import test from "@playwright/test";
 import { HomePage } from "../pages/home.page";
 import { LoginPage } from "../pages/login.page";
 
-test('Verify navigation to Login page from Home page', async ({ page }) => {
+test('An error message displays when user tries to login with blank password', async ({ page }) => {
     const homePage = new HomePage(page);
     const loginPage = new LoginPage(page);
     const email = 'cijnuj@ramcloud.us';
@@ -10,6 +10,6 @@ test('Verify navigation to Login page from Home page', async ({ page }) => {
     await page.goto('http://railwayb2.somee.com/Page/HomePage.cshtml');
 
     await homePage.navigateToLogin();
-    await loginPage.login(email, '123456789'); 
-    await homePage.shouldWelcomeMsgVisible(email);
+    await loginPage.login(email, '');
+    await loginPage.shouldBlankPasswordErrorVisible();
 });
