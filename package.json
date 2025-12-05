@@ -1,7 +1,6 @@
 {
   "name": "testingautomation",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {},
   "keywords": [],
@@ -11,5 +10,17 @@
   "devDependencies": {
     "@playwright/test": "^1.57.0",
     "@types/node": "^24.10.1"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3HoTuan3/UseCaseAutomation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/3HoTuan3/UseCaseAutomation/issues"
+  },
+  "homepage": "https://github.com/3HoTuan3/UseCaseAutomation#readme",
+  "description": ""
 }
