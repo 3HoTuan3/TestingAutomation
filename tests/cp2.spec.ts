@@ -1,0 +1,27 @@
+import test from "@playwright/test";
+import { HomePage } from "../pages/home.page";
+import { LoginPage } from "../pages/login.page";
+import { ChangePasswordPage } from "../pages/change.password.page";
+
+test("Verify user can change password with valid info", async ({ page }) => {
+  const homePage = new HomePage(page);
+  const loginPage = new LoginPage(page);
+  const changePasswordPage = new ChangePasswordPage(page);
+  const email = "dd@ddd.com";
+  const originalPassword = "dd@ddd.com";
+  const newPassword = "dd@ddddd.com";
+
+  await page.goto("http://railwayb2.somee.com/Page/HomePage.cshtml");
+
+  // login
+  await homePage.navigateToLogin();
+  await loginPage.login(email, "dd@ddd.com");
+  await homePage.shouldWelcomeMsgVisible(email);
+
+  // change password
+  await homePage.navigateToChangePassword();
+  await changePasswordPage.change_password(originalPassword, newPassword, newPassword);
+  // change password back to original
+  await changePasswordPage.change_password(newPassword, originalPassword, originalPassword);
+
+});
