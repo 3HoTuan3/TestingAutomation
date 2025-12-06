@@ -1,17 +1,12 @@
 import test, { expect } from "@playwright/test";
 import { RegisterPage } from "../pages/register.page";
 
-/**
- * Tạo chuỗi email có tổng độ dài = len (bao gồm cả '@' và domain).
- * Nếu len < 3 sẽ trả về chuỗi không chứa '@' (để test validation).
- */
 function makeEmailWithTotalLength(len: number) {
     if (len <= 0) return '';
-    if (len < 3) return 'a'.repeat(len); // không đủ để có '@', vẫn dùng để trigger validation
-    // đảm bảo có ít nhất 1 ký tự local và 1 ký tự domain
+    if (len < 3) return 'a'.repeat(len);
     let domainLen = 1;
-    let localLen = len - 1 - domainLen; // trừ '@' và domainLen
-    if (localLen < 1) { // nếu local bị âm hoặc 0, tăng domainLen
+    let localLen = len - 1 - domainLen;
+    if (localLen < 1) { 
         localLen = 1;
         domainLen = Math.max(1, len - 2);
     }
