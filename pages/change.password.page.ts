@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 
 export class ChangePasswordPage {
   private readonly page: Page;
@@ -9,15 +9,15 @@ export class ChangePasswordPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.currentPasswordTxt = this.page.getByLabel('Current Password');
-    this.newPasswordTxt = this.page.getByLabel('New Password');
-    this.confirmPasswordTxt = this.page.getByLabel('Confirm Password');
+    this.currentPasswordTxt = this.page.getByLabel("Current Password");
+    this.newPasswordTxt = this.page.getByLabel("New Password");
+    this.confirmPasswordTxt = this.page.getByLabel("Confirm Password");
     this.changePasswordBtn = this.page.getByRole("button", {
       name: "change password",
     });
   }
 
-  async change_password(
+  async changePassword(
     currentPassword: string,
     newPassword: string,
     confirmPassword: string,
@@ -26,5 +26,10 @@ export class ChangePasswordPage {
     await this.newPasswordTxt.fill(newPassword);
     await this.confirmPasswordTxt.fill(confirmPassword);
     await this.changePasswordBtn.click();
+  }
+
+  async errorMessageVisible(message: string): Promise<void> {
+    const errorMessage = this.page.getByText(message);
+    await expect(errorMessage).toBeVisible();
   }
 }
