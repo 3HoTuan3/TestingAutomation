@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from "@playwright/test";
+import { User } from "../models/user";
 
 export class LoginPage {
   private readonly page: Page;
@@ -16,18 +17,9 @@ export class LoginPage {
     this.loginBtn = this.page.getByRole("button", { name: "login" });
   }
 
-  // async login(user: User) {
-  //   await this.usernameTxt.fill(user.username);
-  //   await this.passwordTxt.fill(user.password);
-  //   await this.loginBtn.click();
-  // }
-
-  async login(
-    username: string = LoginPage.DEFAULT_USERNAME,
-    password: string = LoginPage.DEFAULT_PASSWORD,
-  ): Promise<void> {
-    await this.usernameTxt.fill(username);
-    await this.passwordTxt.fill(password);
+  async login(user: User) {
+    await this.usernameTxt.fill(user.username);
+    await this.passwordTxt.fill(user.password);
     await this.loginBtn.click();
   }
 
