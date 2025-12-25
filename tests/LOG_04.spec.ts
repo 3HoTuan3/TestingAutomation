@@ -1,17 +1,17 @@
 import test from "@playwright/test";
 import { HomePage } from "../pages/home.page";
 import { LoginPage } from "../pages/login.page";
-import { faker } from "@faker-js/faker";
+import { User } from "../models/user";
 
 test("An error message displays when user tries to login with blank email", async ({
   page,
 }) => {
   const homePage = new HomePage(page);
   const loginPage = new LoginPage(page);
-
-  await page.goto("http://railwayb2.somee.com/Page/HomePage.cshtml");
-
+  const user = new User("");
+  await homePage.navigateToHomePage();
   await homePage.navigateToLogin();
-  await loginPage.login("", LoginPage.DEFAULT_PASSWORD);
+
+  await loginPage.login(user);
   await loginPage.shouldBlankEmailErrorVisible();
 });
