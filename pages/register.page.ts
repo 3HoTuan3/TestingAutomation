@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { test, Locator, Page } from "@playwright/test";
 import { User } from "../models/user";
 
 export class RegisterPage {
@@ -31,12 +31,14 @@ export class RegisterPage {
     await this.confirmPasswordTxt.fill(user.confirmPassword);
     await this.pidTxt.fill(user.pid);
     await this.registerBtn.click();
-    await this.page.waitForTimeout(300);
+    await this.page.waitForLoadState("networkidle").catch(() => { });
   }
 
   async checkRegisterSuccess(): Promise<void> {
-    await this.page.waitForSelector('div#content:has-text("You\'re here")', {
-      state: "visible",
+    await test.step("Verify register success message is displayed", async () => {
+      await this.page.waitForSelector('div#content:has-text("You\'re here")', {
+        state: "visible",
+      });
     });
   }
 
