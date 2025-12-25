@@ -25,12 +25,10 @@ export class RegisterPage {
     );
   }
 
-  async register(
-    user: User
-  ): Promise<void> {
+  async register(user: User): Promise<void> {
     await this.usernameTxt.fill(user.username);
     await this.passwordTxt.fill(user.password);
-    await this.confirmPasswordTxt.fill(user.confirmPassword ?? "");
+    await this.confirmPasswordTxt.fill(user.confirmPassword);
     await this.pidTxt.fill(user.pid);
     await this.registerBtn.click();
     await this.page.waitForTimeout(300);
