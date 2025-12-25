@@ -23,13 +23,14 @@ test("BT-03: Error when booking more than 10 tickets", async ({ page }) => {
   const bookPage = new BookTicketPage(page);
   await bookPage.navigateToBookTicket();
 
+  // TODO: Create seperated class for Book Ticket Form
   // Book 5 tickets
   await bookPage.selectBookingInfo(
-    "12/20/2025",
+    "12/23/2025",
     "Sài Gòn",
     "Phan Thiết",
     "Soft seat",
-    5
+    5,
   );
   await bookPage.clickBookTicket();
 
@@ -42,7 +43,7 @@ test("BT-03: Error when booking more than 10 tickets", async ({ page }) => {
     "Sài Gòn",
     "Phan Thiết",
     "Soft seat",
-    6
+    6,
   );
   await bookPage.clickBookTicket();
 

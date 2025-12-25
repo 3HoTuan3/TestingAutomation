@@ -6,7 +6,8 @@ export class HomePage {
   private readonly navChangePassword: Locator;
   private readonly navRegister: Locator;
   private readonly navLogout: Locator;
-
+  private readonly navContact: Locator;
+  
   constructor(page: Page) {
     this.page = page;
     this.navBarLogin = this.page.getByRole("link", {
@@ -16,7 +17,8 @@ export class HomePage {
       name: "Change password",
     });
     this.navRegister = this.page.getByRole("link", { name: "Register" });
-    this.navLogout = this.page.getByRole("link", { name: "log out" });
+    this.navContact = this.page.getByRole("link", { name: "Contact" });
+    this.navLogout = this.page.getByRole("link", { name: "Log out" });
   }
 
   async navigateToHomePage(): Promise<void> {
@@ -41,6 +43,10 @@ export class HomePage {
     await test.step("Navigate to Register Page", async () => {
       await this.navRegister.click();
     });
+  }
+
+  async navigateToContact(): Promise<void> {
+    await this.navContact.click();
   }
 
   async logout(): Promise<void> {

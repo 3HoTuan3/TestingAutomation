@@ -2,30 +2,40 @@ import test from "@playwright/test";
 import { HomePage } from "../pages/home.page";
 import { LoginPage } from "../pages/login.page";
 import { ChangePasswordPage } from "../pages/change.password.page";
+import { faker } from "@faker-js/faker";
+import { RegisterPage } from "../pages/register.page";
 
 test("Verify error message displays when user enter incorrect current password", async ({
   page,
 }) => {
   const homePage = new HomePage(page);
   const loginPage = new LoginPage(page);
+  const registerPage = new RegisterPage(page);
   const changePasswordPage = new ChangePasswordPage(page);
-  const email = "dd@ddd.com";
-  const incorrectOriginalPassword = "dd@dddfjlkajfdlasjfasjfaosjdd.com";
-  const newPassword = "dd@ddddd.com";
 
-  await page.goto("http://railwayb2.somee.com/Page/HomePage.cshtml");
+  const tempUsername = faker.internet.email();
+  const tempPassword = faker.internet.password();
+  const tempNewPassword = faker.internet.password();
+  const bsPassword = "incorrectpassword";
+  const tempPID = faker.string.numeric(9);
 
-  // login
+  await homePage.navigateToHomePage();
+  await homePage.navigateToRegister();
+  await registerPage.register(
+    tempUsername,
+    tempPassword,
+    tempPassword,
+    tempPID,
+  );
   await homePage.navigateToLogin();
-  await loginPage.login(email, "dd@ddddd.com");
-  await homePage.shouldWelcomeMsgVisible(email);
+  await loginPage.login(tempUsername, tempPassword);
 
-  // change password with incorrect password
+  // enter incorrect current password
   await homePage.navigateToChangePassword();
   await changePasswordPage.changePassword(
-    incorrectOriginalPassword,
-    newPassword,
-    newPassword,
+    bsPassword,
+    tempNewPassword,
+    tempNewPassword,
   );
   await changePasswordPage.errorMessageVisible("Error");
 });

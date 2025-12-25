@@ -17,7 +17,7 @@ test("BT-LOGOUT: User is logged out when clicking Logout tab", async ({
   await loginPage.login(EMAIL, PASSWORD);
   await homePage.shouldWelcomeMsgVisible(EMAIL);
 
-  await page.getByRole("link", { name: "Log out" }).click();
+  await homePage.logout();
 
   await expect(page).toHaveURL(HOME_URL);
 

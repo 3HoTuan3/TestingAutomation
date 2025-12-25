@@ -21,7 +21,7 @@ test("BT-01: User can successfully book a ticket with valid information", async 
   const amount = Math.floor(Math.random() * 10) + 1;
 
   await bookTicketPage.selectBookingInfo(
-    "12/10/2025",
+    "12/23/2025",
     "Sài Gòn",
     "Phan Thiết",
     "Hard seat",
