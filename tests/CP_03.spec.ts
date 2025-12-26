@@ -4,6 +4,7 @@ import { LoginPage } from "../pages/login.page";
 import { ChangePasswordPage } from "../pages/change.password.page";
 import { faker } from "@faker-js/faker";
 import { RegisterPage } from "../pages/register.page";
+import { User } from "../models/user";
 
 test("Verify error message displays when user enter incorrect current password", async ({
   page,
@@ -16,24 +17,27 @@ test("Verify error message displays when user enter incorrect current password",
   const tempUsername = faker.internet.email();
   const tempPassword = faker.internet.password();
   const tempNewPassword = faker.internet.password();
-  const bsPassword = "incorrectpassword";
+  const incorrectPassword = "incorrectpassword";
   const tempPID = faker.string.numeric(9);
+  const user = new User({
+    username: tempUsername,
+    password: tempPassword,
+    pid: tempPID,
+  });
 
   await homePage.navigateToHomePage();
   await homePage.navigateToRegister();
-  await registerPage.register(
-    tempUsername,
-    tempPassword,
-    tempPassword,
-    tempPID,
-  );
+  await registerPage.register(user);
   await homePage.navigateToLogin();
-  await loginPage.login(tempUsername, tempPassword);
+  await loginPage.login(user);
+
+  // Update user object with incorrect password
+  user.password = incorrectPassword;
 
   // enter incorrect current password
   await homePage.navigateToChangePassword();
   await changePasswordPage.changePassword(
-    bsPassword,
+    user,
     tempNewPassword,
     tempNewPassword,
   );

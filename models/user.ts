@@ -1,6 +1,6 @@
 export class User {
   public readonly username: string;
-  public readonly password: string;
+  public password: string;
   public readonly confirmPassword?: string;
   public readonly pid: string;
 
@@ -19,5 +19,9 @@ export class User {
     this.password = password;
     this.confirmPassword = confirmPassword;
     this.pid = pid;
+  }
+
+  async updatePassword(newPassword: string): Promise<void> {
+    this.password = newPassword;
   }
 }
