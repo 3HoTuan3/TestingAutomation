@@ -1,4 +1,6 @@
 import { test, expect, Locator, Page } from "@playwright/test";
+import { User } from "../models/user";
+import { LoginPage } from "./login.page";
 
 export class HomePage {
   private readonly page: Page;
@@ -193,5 +195,42 @@ export class HomePage {
   async navigateAndVerifyLogin(): Promise<void> {
     await this.navigateToLogin();
     await this.verifyLoginPageLoaded();
+  }
+
+  async shouldChangePasswordTabVisible(): Promise<void> {
+    await test.step("Observe Change Password tab is displayed", async () => {
+      await expect(this.navChangePassword).toBeVisible();
+    });
+  }
+
+  async verifyChangePasswordPageLoaded(): Promise<void> {
+    await test.step("Verify Change Password page loaded", async () => {
+      await this.page.waitForLoadState("networkidle");
+      await expect(this.page).toHaveURL(/ChangePassword/i);
+    });
+  }
+
+  async navigateAndVerifyChangePassword(): Promise<void> {
+    await this.shouldChangePasswordTabVisible();
+    await this.navigateToChangePassword();
+    await this.verifyChangePasswordPageLoaded();
+  }
+
+  async loginAndVerifyChangePasswordTab(user: User): Promise<void> {
+    await test.step("Login into the system", async () => {
+      await this.navigateToHomePage();
+      await this.navigateToLogin();
+      const loginPage = new LoginPage(this.page);
+      await loginPage.login(user);
+      await this.shouldWelcomeMsgVisible(user.username);
+    });
+
+    await test.step("Observe newly appeared tab (Change Password)", async () => {
+      await this.shouldChangePasswordTabVisible();
+    });
+
+    await test.step("Click on Change Password tab", async () => {
+      await this.navigateAndVerifyChangePassword();
+    });
   }
 }
