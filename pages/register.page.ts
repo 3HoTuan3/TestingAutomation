@@ -10,6 +10,9 @@ export class RegisterPage {
   private readonly registerBtn: Locator;
   private readonly errorMsg: Locator;
   private readonly emailValidationLabel: Locator;
+  private readonly passwordValidationLabel: Locator;
+  private readonly confirmPasswordValidationLabel: Locator;
+  private readonly pidValidationLabel: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,6 +25,15 @@ export class RegisterPage {
     this.errorMsg = this.page.locator("div#content p.message.error");
     this.emailValidationLabel = this.page.locator(
       'label.validation-error[for="email"]',
+    );
+    this.passwordValidationLabel = this.page.locator(
+      'label.validation-error[for="password"]',
+    );
+    this.confirmPasswordValidationLabel = this.page.locator(
+      'label.validation-error[for="confirmPassword"]',
+    );
+    this.pidValidationLabel = this.page.locator(
+      'label.validation-error[for="pid"]',
     );
   }
 
@@ -54,19 +66,61 @@ export class RegisterPage {
   async getEmailValidationText(): Promise<string> {
     await this.emailValidationLabel
       .waitFor({ state: "visible", timeout: 3000 })
-      .catch(() => {});
+      .catch(() => { });
     return (await this.emailValidationLabel.textContent()) ?? "";
+  }
+
+  async getPasswordValidationText(): Promise<string> {
+    await this.passwordValidationLabel
+      .waitFor({ state: "visible", timeout: 3000 })
+      .catch(() => { });
+    return (await this.passwordValidationLabel.textContent()) ?? "";
+  }
+
+  async isPasswordValidationVisible(): Promise<boolean> {
+    return await this.passwordValidationLabel
+      .waitFor({ state: "visible", timeout: 1500 })
+      .then(() => true)
+      .catch(() => false);
   }
 
   async getFormErrorText(): Promise<string> {
     await this.errorMsg
       .waitFor({ state: "visible", timeout: 3000 })
-      .catch(() => {});
+      .catch(() => { });
     return (await this.errorMsg.textContent()) ?? "";
   }
 
   async isEmailValidationVisible(): Promise<boolean> {
     return await this.emailValidationLabel
+      .waitFor({ state: "visible", timeout: 1500 })
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  async getConfirmPasswordValidationLabelText(): Promise<string> {
+    await this.confirmPasswordValidationLabel
+      .waitFor({ state: "visible", timeout: 3000 })
+      .catch(() => { });
+    return (await this.confirmPasswordValidationLabel.textContent()) ?? "";
+  }
+
+  async isConfirmPasswordValidationVisible(): Promise<boolean> {
+    return await this.confirmPasswordValidationLabel
+      .waitFor({ state: "visible", timeout: 1500 })
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  async getPidValidationText(): Promise<string> {
+    await this.pidValidationLabel
+      .waitFor({ state: "visible", timeout: 3000 })
+      .catch(() => { });
+    return (await this.pidValidationLabel.textContent()) ?? "";
+  }
+
+  async isPidValidationVisible(): Promise<boolean> {
+    return await this.pidValidationLabel
       .waitFor({ state: "visible", timeout: 1500 })
       .then(() => true)
       .catch(() => false);

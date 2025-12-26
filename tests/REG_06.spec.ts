@@ -1,45 +1,67 @@
 import test, { expect } from "@playwright/test";
 import { RegisterPage } from "../pages/register.page";
 import { HomePage } from "../pages/home.page";
+import { faker } from "@faker-js/faker";
 
-function makeEmailWithTotalLength(len: number) {
-    if (len <= 0) return '';
-    if (len < 3) return 'a'.repeat(len);
-    let domainLen = 1;
-    let localLen = len - 1 - domainLen;
-    if (localLen < 1) { 
-        localLen = 1;
-        domainLen = Math.max(1, len - 2);
+function generateEmailWithLength(length: number): string {
+    if (length <= 0) return "";
+    if (length < 5) {
+        if (length >= 3) {
+            const suffix = "@b";
+            return "a".repeat(length - suffix.length) + suffix;
+        }
+        return "a".repeat(length);
     }
-    const local = 'a'.repeat(localLen);
-    const domain = 'b'.repeat(domainLen);
-    return `${local}@${domain}`; // ví dụ: "a@b", "aa@b", "aaa@bb", ...
+    const suffix = "@b.c"; 
+    const localPartLength = length - suffix.length;
+    return "a".repeat(localPartLength) + suffix;
 }
 
-const tooShort = [1, 4, 5]; // tổng độ dài < 6
-const tooLong = [33, 100, 255, 256]; // tổng độ dài > 32
+// Danh sách độ dài cần test
+const testData = [
+    { len: 1, type: "Too Short (< 6)" },
+    { len: 4, type: "Too Short (< 6)" },
+    { len: 5, type: "Too Short (< 6)" },
+    { len: 33, type: "Too Long (> 32)" },
+    { len: 100, type: "Too Long (> 32)" },
+    { len: 255, type: "Too Long (> 32)" },
+    { len: 256, type: "Too Long (> 32)" }
+];
 
 test.describe('REG_06 - Error when registering with invalid email length', () => {
-    for (const len of [...tooShort, ...tooLong]) {
-        test(`should show error for total email length ${len}`, async ({ page }) => {
+    for (const data of testData) {
+        test(`Case ${data.type}: Length ${data.len}`, async ({ page }) => {
             const homePage = new HomePage(page);
             const registerPage = new RegisterPage(page);
-            const email = makeEmailWithTotalLength(len);
-            const password = '123456789';
 
-            await homePage.navigateToHomePage();
-            await homePage.navigateToRegister();
+            const email = generateEmailWithLength(data.len);
+            const password = faker.internet.password();
+            const PID = faker.string.numeric(9);
+            const user = { username: email, password: password, confirmPassword: password, pid: PID };
 
-            await registerPage.register(email, password, password, '123456789');
+            // console.log(`Testing with email: ${email} (Length: ${email.length})`);
 
-            // assert label next to Email field is shown and has correct text
-            expect(await registerPage.isEmailValidationVisible()).toBe(true);
-            const labelText = await registerPage.getEmailValidationText();
-            expect(labelText).toMatch(/invalid email length|length/i);
+            await test.step('Navigate to Register Page', async () => {
+                await homePage.navigateToHomePage();
+                await homePage.navigateToRegister();
+            });
 
-            // assert global form error message is shown
-            const formErr = await registerPage.getFormErrorText();
-            expect(formErr).toMatch(/There're errors in the form|errors in the form/i);
+            await test.step(`Register with email length ${data.len}`, async () => {
+                await registerPage.register(user);
+            });
+
+            await test.step("Verify error message", async () => {
+                await test.step("Check global error message", async () => {
+                    // Check lỗi chung
+                    const formErr = await registerPage.getRegisterAlreadyUseText();
+                    expect(formErr).toMatch(/There're errors in the form|errors in the form/i);
+                });
+                await test.step("Check email length error message at form", async () => {
+                    // Check lỗi độ dài email ở form
+                    const labelText = await registerPage.getEmailValidationText();
+                    expect(labelText).toMatch(/invalid email length|length/i);
+                });
+            });
         });
     }
 });
