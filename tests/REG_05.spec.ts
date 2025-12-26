@@ -1,5 +1,6 @@
 import test, { expect } from "@playwright/test";
 import { RegisterPage } from "../pages/register.page";
+import { HomePage } from "../pages/home.page";
 
 const invalidFormats = [
     "plainaddress",
@@ -17,11 +18,12 @@ const invalidFormats = [
 test.describe('REG_05 - Error when registering with invalid email format', () => {
     for (const email of invalidFormats) {
         test(`should show error for invalid format: "${email}"`, async ({ page }) => {
+            const homePage = new HomePage(page);
             const registerPage = new RegisterPage(page);
             const password = '123456789';
 
-            await page.goto('http://railwayb2.somee.com/Page/HomePage.cshtml');
-            await page.getByRole('link', { name: 'Register' }).click();
+            await homePage.navigateToHomePage();
+            await homePage.navigateToRegister();
 
             await registerPage.register(email, password, password, '123456789');
 

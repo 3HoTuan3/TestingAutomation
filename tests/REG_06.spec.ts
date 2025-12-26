@@ -1,5 +1,6 @@
 import test, { expect } from "@playwright/test";
 import { RegisterPage } from "../pages/register.page";
+import { HomePage } from "../pages/home.page";
 
 function makeEmailWithTotalLength(len: number) {
     if (len <= 0) return '';
@@ -21,12 +22,13 @@ const tooLong = [33, 100, 255, 256]; // tổng độ dài > 32
 test.describe('REG_06 - Error when registering with invalid email length', () => {
     for (const len of [...tooShort, ...tooLong]) {
         test(`should show error for total email length ${len}`, async ({ page }) => {
+            const homePage = new HomePage(page);
             const registerPage = new RegisterPage(page);
             const email = makeEmailWithTotalLength(len);
             const password = '123456789';
 
-            await page.goto('http://railwayb2.somee.com/Page/HomePage.cshtml');
-            await page.getByRole('link', { name: 'Register' }).click();
+            await homePage.navigateToHomePage();
+            await homePage.navigateToRegister();
 
             await registerPage.register(email, password, password, '123456789');
 
