@@ -3,7 +3,7 @@ import { RegisterPage } from "../pages/register.page";
 import { HomePage } from "../pages/home.page";
 import { faker } from "@faker-js/faker";
 import { User } from "../models/user";
-// 1 là dùng này đơn giản đối với hệ thống không có yêu cầu phức tạp về mật khẩu
+// 1. là dùng này đơn giản đối với hệ thống không có yêu cầu phức tạp về mật khẩu
 // const testData = [
 //     { len: 1, type: "Too Short (< 8)" },
 //     { len: 5, type: "Too Short (< 8)" },
@@ -14,6 +14,7 @@ import { User } from "../models/user";
 //     { len: 256, type: "Too Long (> 64)" }
 // ];
 
+// 2. Hàm tạo mật khẩu với độ dài tùy ý, đảm bảo có đủ loại ký tự
 const generateFakerPassword = (len: number): string => {
     if (len < 4) {
         return faker.string.alphanumeric(len); 
@@ -68,6 +69,8 @@ test.describe('REG_07 - Error when registering with invalid password length', ()
                 });
 
                 await test.step('Check password validation label at form', async () => {
+                    const visible = await registerPage.isPasswordValidationVisible();
+                    expect(visible).toBeTruthy();
                     const labelText = await registerPage.getPasswordValidationText();
                     expect(labelText).toMatch(/invalid password length|length|password/i);
                 });

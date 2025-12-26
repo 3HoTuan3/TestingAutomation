@@ -11,6 +11,7 @@ export class RegisterPage {
   private readonly errorMsg: Locator;
   private readonly emailValidationLabel: Locator;
   private readonly passwordValidationLabel: Locator;
+  private readonly confirmPasswordValidationLabel: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -26,6 +27,9 @@ export class RegisterPage {
     );
     this.passwordValidationLabel = this.page.locator(
       'label.validation-error[for="password"]',
+    );
+    this.confirmPasswordValidationLabel = this.page.locator(
+      'label.validation-error[for="confirmPassword"]',
     );
   }
 
@@ -69,6 +73,13 @@ export class RegisterPage {
     return (await this.passwordValidationLabel.textContent()) ?? "";
   }
 
+  async isPasswordValidationVisible(): Promise<boolean> {
+    return await this.passwordValidationLabel
+      .waitFor({ state: "visible", timeout: 1500 })
+      .then(() => true)
+      .catch(() => false);
+  }
+
   async getFormErrorText(): Promise<string> {
     await this.errorMsg
       .waitFor({ state: "visible", timeout: 3000 })
@@ -78,6 +89,20 @@ export class RegisterPage {
 
   async isEmailValidationVisible(): Promise<boolean> {
     return await this.emailValidationLabel
+      .waitFor({ state: "visible", timeout: 1500 })
+      .then(() => true)
+      .catch(() => false);
+  }
+
+  async getConfirmPasswordValidationLabelText(): Promise<string> {
+    await this.confirmPasswordValidationLabel
+      .waitFor({ state: "visible", timeout: 3000 })
+      .catch(() => { });
+    return (await this.confirmPasswordValidationLabel.textContent()) ?? "";
+  }
+
+  async isConfirmPasswordValidationVisible(): Promise<boolean> {
+    return await this.confirmPasswordValidationLabel
       .waitFor({ state: "visible", timeout: 1500 })
       .then(() => true)
       .catch(() => false);
