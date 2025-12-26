@@ -4,6 +4,7 @@ import { LoginPage } from "../pages/login.page";
 import { ChangePasswordPage } from "../pages/change.password.page";
 import { faker } from "@faker-js/faker";
 import { RegisterPage } from "../pages/register.page";
+import { User } from "../models/user";
 
 test("Verify user can change password with valid info", async ({ page }) => {
   const homePage = new HomePage(page);
@@ -15,27 +16,32 @@ test("Verify user can change password with valid info", async ({ page }) => {
   const tempPassword = faker.internet.password();
   const tempNewPassword = faker.internet.password();
   const tempPID = faker.string.numeric(9);
+  const user = new User({
+    username: tempUsername,
+    password: tempPassword,
+    confirmPassword: tempPassword,
+    pid: tempPID,
+  });
 
   await homePage.navigateToHomePage();
   await homePage.navigateToRegister();
-  await registerPage.register(
-    tempUsername,
-    tempPassword,
-    tempPassword,
-    tempPID,
-  );
+  await registerPage.register(user);
   await homePage.navigateToLogin();
-  await loginPage.login(tempUsername, tempPassword);
+  await loginPage.login(user);
 
   // Change password
   await homePage.navigateToChangePassword();
   await changePasswordPage.changePassword(
-    tempPassword,
+    user,
     tempNewPassword,
     tempNewPassword,
   );
 
+  // Update password in user object
+  user.password = tempNewPassword;
+
   // Re-login with new password to verify
   await homePage.logout();
-  await loginPage.login(tempUsername, tempNewPassword);
+  await homePage.navigateToLogin();
+  await loginPage.login(user);
 });
