@@ -10,6 +10,7 @@ export class RegisterPage {
   private readonly registerBtn: Locator;
   private readonly errorMsg: Locator;
   private readonly emailValidationLabel: Locator;
+  private readonly passwordValidationLabel: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -22,6 +23,9 @@ export class RegisterPage {
     this.errorMsg = this.page.locator("div#content p.message.error");
     this.emailValidationLabel = this.page.locator(
       'label.validation-error[for="email"]',
+    );
+    this.passwordValidationLabel = this.page.locator(
+      'label.validation-error[for="password"]',
     );
   }
 
@@ -54,14 +58,21 @@ export class RegisterPage {
   async getEmailValidationText(): Promise<string> {
     await this.emailValidationLabel
       .waitFor({ state: "visible", timeout: 3000 })
-      .catch(() => {});
+      .catch(() => { });
     return (await this.emailValidationLabel.textContent()) ?? "";
+  }
+
+  async getPasswordValidationText(): Promise<string> {
+    await this.passwordValidationLabel
+      .waitFor({ state: "visible", timeout: 3000 })
+      .catch(() => { });
+    return (await this.passwordValidationLabel.textContent()) ?? "";
   }
 
   async getFormErrorText(): Promise<string> {
     await this.errorMsg
       .waitFor({ state: "visible", timeout: 3000 })
-      .catch(() => {});
+      .catch(() => { });
     return (await this.errorMsg.textContent()) ?? "";
   }
 

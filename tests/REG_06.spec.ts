@@ -39,7 +39,7 @@ test.describe('REG_06 - Error when registering with invalid email length', () =>
             const PID = faker.string.numeric(9);
             const user = { username: email, password: password, confirmPassword: password, pid: PID };
 
-            console.log(`Testing with email: ${email} (Length: ${email.length})`);
+            // console.log(`Testing with email: ${email} (Length: ${email.length})`);
 
             await test.step('Navigate to Register Page', async () => {
                 await homePage.navigateToHomePage();
