@@ -13,6 +13,8 @@ export class RegisterPage {
   private readonly passwordValidationLabel: Locator;
   private readonly confirmPasswordValidationLabel: Locator;
   private readonly pidValidationLabel: Locator;
+  private readonly loginLink: Locator;
+  private readonly confirmLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -35,6 +37,9 @@ export class RegisterPage {
     this.pidValidationLabel = this.page.locator(
       'label.validation-error[for="pid"]',
     );
+    // Prefer role-based locators by visible link text to avoid strict-mode collisions
+    this.loginLink = this.page.getByRole("link", { name: /login/i });
+    this.confirmLink = this.page.getByRole("link", { name: /here/i });
   }
 
   async register(user: User): Promise<void> {
@@ -138,5 +143,49 @@ export class RegisterPage {
       .waitFor({ state: "visible", timeout: 1500 })
       .then(() => true)
       .catch(() => false);
+  }
+
+  async clickLoginLink(): Promise<void> {
+    await test.step("Click Login link", async () => {
+      await this.loginLink.first().click();
+    });
+  }
+
+  async clickConfirmLink(): Promise<void> {
+    await test.step("Click Confirm link", async () => {
+      await this.confirmLink.first().click();
+    });
+  }
+
+  async getLoginLinkInfo(): Promise<{ text: string; href: string }> {
+    const el = this.loginLink.first();
+    const text = (await el.textContent()) ?? "";
+    const href = (await el.getAttribute("href")) ?? "";
+    return { text: text.trim(), href };
+  }
+
+  async getConfirmLinkInfo(): Promise<{ text: string; href: string }> {
+    const el = this.confirmLink.first();
+    const text = (await el.textContent()) ?? "";
+    const href = (await el.getAttribute("href")) ?? "";
+    return { text: text.trim(), href };
+  }
+
+  async isAtLoginPage(timeout = 3000): Promise<boolean> {
+    try {
+      await this.page.waitForURL(/Login\.cshtml/, { timeout });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async isAtConfirmPage(timeout = 3000): Promise<boolean> {
+    try {
+      await this.page.waitForURL(/Confirm\.cshtml/, { timeout });
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
