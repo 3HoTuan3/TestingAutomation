@@ -4,6 +4,7 @@ import { LoginPage } from "../pages/login.page";
 import { ChangePasswordPage } from "../pages/change.password.page";
 import { faker } from "@faker-js/faker";
 import { RegisterPage } from "../pages/register.page";
+import { User } from "../models/user";
 
 test("Verify error message displays when New Password and Confirm Password do not match", async ({
   page,
@@ -18,24 +19,25 @@ test("Verify error message displays when New Password and Confirm Password do no
   const tempNewPassword = faker.internet.password();
   const incorrectConfirmPassword = "123456789";
   const tempPID = faker.string.numeric(9);
+  const user = new User({
+    username: tempUsername,
+    password: tempPassword,
+    pid: tempPID,
+  });
 
   await homePage.navigateToHomePage();
   await homePage.navigateToRegister();
-  await registerPage.register(
-    tempUsername,
-    tempPassword,
-    tempPassword,
-    tempPID,
-  );
+  await registerPage.register(user);
   await homePage.navigateToLogin();
-  await loginPage.login(tempUsername, tempPassword);
+  await loginPage.login(user);
 
   // change password with non matching confirm password
   await homePage.navigateToChangePassword();
   await changePasswordPage.changePassword(
-    tempPassword,
+    user,
     tempNewPassword,
     incorrectConfirmPassword,
   );
+
   await changePasswordPage.errorMessageVisible("Error");
 });
