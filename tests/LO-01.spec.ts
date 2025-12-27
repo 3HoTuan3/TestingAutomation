@@ -10,10 +10,16 @@ test("BT-LOGOUT: User is logged out when clicking Logout tab", async ({
   const loginPage = new LoginPage(page);
   const user = new User();
 
-  await homePage.navigateToHomePage();
-  await homePage.navigateToLogin();
-  await loginPage.login(user);
+  await test.step("Navigate to Login Page", async () => {
+    await homePage.navigateToHomePage();
+    await homePage.navigateToLogin();
+  });
+  await test.step("Login with valid user", async () => {
+    await loginPage.login(user);
+  });
 
-  await homePage.logout();
-  await homePage.verifyLoggedOut();
+  await test.step("Click Logout", async () => {
+    await homePage.logout();
+    await homePage.verifyLoggedOut();
+  });
 });
