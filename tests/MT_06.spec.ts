@@ -38,7 +38,7 @@ test.describe("MT-06 Filter Combined Criteria", () => {
     await test.step("Book 6 tickets (quantity = 1 each)", async () => {
       for (let i = 0; i < 6; i++) {
         await homePage.navigateToBookTicket();
-        const ticket = new BookTicket(1);
+        const ticket = new BookTicket({ amount: 1 });
         await bookTicketPage.bookTicket(ticket);
       }
     });

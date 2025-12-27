@@ -13,7 +13,6 @@ test("BT-03: Error when booking more than 10 tickets", async ({ page }) => {
   const loginPage = new LoginPage(page);
   const bookTicketPage = new BookTicketPage(page);
 
-  // ===== Faker user =====
   const email = faker.internet.email();
   const password = faker.internet.password();
   const pid = faker.string.numeric(9);
@@ -34,14 +33,14 @@ test("BT-03: Error when booking more than 10 tickets", async ({ page }) => {
     await homePage.navigateToBookTicket();
 
   await test.step("Action: Max out booking limit (Book 10 tickets)", async () => {
-      const firstBooking = new BookTicket(10);
+      const firstBooking = new BookTicket({ amount: 10 });
       await bookTicketPage.bookTicket(firstBooking);
       await bookTicketPage.verifyBookedSuccessfully();
   });
 
   await test.step("Action: Attempt to book 1 more ticket", async () => {
       await bookTicketPage.navigateToBookTicket();
-      const secondBooking = new BookTicket(1);
+      const secondBooking = new BookTicket({ amount: 10 });
       await bookTicketPage.bookTicket(secondBooking);
   });
 
