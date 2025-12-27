@@ -7,8 +7,11 @@ export class HomePage {
   private readonly navBarLogin: Locator;
   private readonly navChangePassword: Locator;
   private readonly navRegister: Locator;
-  private readonly navLogout: Locator;
   private readonly navContact: Locator;
+  private readonly navLogout: Locator;
+  private readonly navMyTicket: Locator;
+  private readonly navBookTicket: Locator;
+  private readonly navTicketPrice: Locator;
   private readonly navFaq: Locator;
   private readonly navTimetable: Locator;
   private readonly navTicketPrice: Locator;
@@ -16,18 +19,19 @@ export class HomePage {
 
   constructor(page: Page) {
     this.page = page;
-    this.navBarLogin = this.page.getByRole("link", {
-      name: "Login",
-    });
-    this.navChangePassword = this.page.getByRole("link", {
+
+    this.navBarLogin = page.getByRole("link", { name: "Login" });
+    this.navChangePassword = page.getByRole("link", {
       name: "Change password",
     });
-    this.navRegister = this.page.getByRole("link", { name: "Register" });
-    this.navContact = this.page.getByRole("link", { name: "Contact" });
-    this.navLogout = this.page.getByRole("link", { name: "Log out" });
+    this.navRegister = page.getByRole("link", { name: "Register" });
+    this.navContact = page.getByRole("link", { name: "Contact" });
+    this.navLogout = page.getByRole("link", { name: "Log out" });
+    this.navMyTicket = page.getByRole("link", { name: "My ticket" });
+    this.navBookTicket = page.getByRole("link", { name: "Book ticket" });
+    this.navTicketPrice = page.getByRole("link", { name: "Ticket Price" });
     this.navFaq = this.page.getByRole("link", { name: "FAQ" });
     this.navTimetable = this.page.getByRole("link", { name: "Timetable" });
-    this.navTicketPrice = this.page.getByRole("link", { name: "Ticket price" });
     this.navBookTicket = this.page.getByRole("link", { name: "Book ticket" });
   }
 
@@ -77,6 +81,12 @@ export class HomePage {
     await test.step("Navigate to Book Ticket Page", async () => {
       await this.navBookTicket.click();
     });
+  }
+  
+  async navigateToMyTicket(): Promise<void> {
+    await test.step("Navigate to My Ticket Page", async () => {
+      await this.navMyTicket.click();
+    })
   }
 
   async navigateToTimetable(): Promise<void> {
