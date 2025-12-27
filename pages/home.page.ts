@@ -90,7 +90,9 @@ export class HomePage {
   }
 
   async navigateToTimetable(): Promise<void> {
-    await this.navTimetable.click();
+    await test.step("Navigate to Timetable Page", async () => {
+      await this.navTimetable.click();
+    });
   }
 
   async logout(): Promise<void> {
