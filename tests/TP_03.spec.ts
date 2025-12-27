@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { HomePage } from "../pages/home.page";
 import { LoginPage } from "../pages/login.page";
 import { TicketPricePage } from "../pages/ticketprice.page";
@@ -9,15 +9,18 @@ test.describe("TP-03 View Ticket Price Detail", () => {
     const homePage = new HomePage(page);
     const loginPage = new LoginPage(page);
     const user = new User();
+    const ticketPricePage = new TicketPricePage(page);
 
     await homePage.navigateToHomePage();
     await homePage.navigateToLogin();
     await loginPage.login(user);
 
-    const ticketPricePage = new TicketPricePage(page);
-    await ticketPricePage.clickCheckPriceFirstRow();
-    
+
     await homePage.navigateToTicketPrice();
+
+    await test.step("Click 'Check Price' on first row", async () => {
+      await ticketPricePage.clickCheckPriceFirstRow();
+    });
   });
 
   test("TP-03 Ticket price detail table displays properly", async ({
