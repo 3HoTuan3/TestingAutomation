@@ -14,7 +14,7 @@ export class HomePage {
   private readonly navTicketPrice: Locator;
   private readonly navFaq: Locator;
   private readonly navTimetable: Locator;
-  
+
   constructor(page: Page) {
     this.page = page;
 
@@ -59,21 +59,21 @@ export class HomePage {
 
   async navigateToContact(): Promise<void> {
     await test.step("Navigate to Contact Page", async () => {
-      await test.step("Navigate to Contact Page", async () => {
       await this.navContact.click();
     });
   }
+
 
   async openMyTicketTab(): Promise<void> {
     await test.step("Open My Ticket page", async () => {
       await this.navMyTicket.click();
     });
   }
-  
+
   async openTicketPriceTab(): Promise<void> {
     await test.step("Open Ticket Price page", async () => {
       await this.navTicketPrice.click();
-    })
+    });
   }
 
   async navigateToFaq(): Promise<void> {
