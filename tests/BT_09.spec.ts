@@ -13,5 +13,5 @@ test("BT-09: Logged in user can navigate to Book Ticket page", async ({
   await homePage.navigateToHomePage();
   await loginPage.login(user);
     
-  await homePage.openBookTicketTab();
+  await homePage.navigateToBookTicket();
 });

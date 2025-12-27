@@ -35,7 +35,7 @@ test("BT-01: User can successfully book a ticket with valid information", async 
   await homePage.navigateToLogin();
   await loginPage.login(user);
 
-  await homePage.openBookTicketTab();
+  await homePage.navigateToBookTicket();
 
   await test.step("Action: Submit booking with valid data", async () => {
     await bookTicketPage.bookTicket(ticket);

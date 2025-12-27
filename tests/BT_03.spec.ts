@@ -31,7 +31,7 @@ test("BT-03: Error when booking more than 10 tickets", async ({ page }) => {
     await homePage.navigateToLogin();
     await loginPage.login(user);
     
-    await homePage.openBookTicketTab();
+    await homePage.navigateToBookTicket();
 
   await test.step("Action: Max out booking limit (Book 10 tickets)", async () => {
       const firstBooking = new BookTicket(10);

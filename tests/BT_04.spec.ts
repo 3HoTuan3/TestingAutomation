@@ -7,7 +7,7 @@ test("BT-04: Redirect to Login when accessing Book Ticket without login", async 
   const homePage = new HomePage(page);
 
   await homePage.navigateToHomePage();
-  await homePage.openBookTicketTab();
+  await homePage.navigateToBookTicket();
 
 
   await test.step("Assertion: Verify redirect to Login page", async () => {
