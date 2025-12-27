@@ -3,7 +3,7 @@ import { faker } from "@faker-js/faker";
 import { HomePage } from "../pages/home.page";
 import { LoginPage } from "../pages/login.page";
 import { RegisterPage } from "../pages/register.page";
-import { BookTicketPage } from "../pages/book-ticket.page";
+import { BookTicketPage } from "../pages/bookticket.page";
 import { MyTicketPage } from "../pages/myticket.page";
 import { User } from "../models/user";
 import { BookTicket } from "../models/bookticket";

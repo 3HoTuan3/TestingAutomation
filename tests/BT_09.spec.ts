@@ -11,6 +11,7 @@ test("BT-09: Logged in user can navigate to Book Ticket page", async ({
   const user = new User();
 
   await homePage.navigateToHomePage();
+  await homePage.navigateToLogin();
   await loginPage.login(user);
     
   await homePage.navigateToBookTicket();
