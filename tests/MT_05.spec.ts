@@ -1,42 +1,68 @@
 import { test } from "@playwright/test";
+import { faker } from "@faker-js/faker";
 import { HomePage } from "../pages/home.page";
 import { LoginPage } from "../pages/login.page";
+import { RegisterPage } from "../pages/register.page";
 import { MyTicketPage } from "../pages/myticket.page";
+import { BookTicketPage } from "../pages/bookticket.page";
+import { User } from "../models/user";
+import { BookTicket } from "../models/bookticket";
 
-test.describe("MT-05 Filter Specific Criteria", () => {
+test.describe("MT-05 Filter Specific Criteria (book 6 tickets)", () => {
+  let user: User;
+
   test.beforeEach(async ({ page }) => {
     const homePage = new HomePage(page);
+    const registerPage = new RegisterPage(page);
     const loginPage = new LoginPage(page);
+
+    // Tạo user bằng faker
+    const email = faker.internet.email();
+    const password = faker.internet.password();
+    const pid = faker.string.numeric(9);
+
+    user = new User({
+      username: email,
+      password,
+      confirmPassword: password,
+      pid,
+    });
+
     await homePage.navigateToHomePage();
+    await homePage.navigateToRegister();
+    await registerPage.register(user);
+
     await homePage.navigateToLogin();
-    await loginPage.login();
-    await homePage.openMyTicketTab();
+    await loginPage.login(user);
   });
 
-  test("MT-05 Users can filter with a specific criteria", async ({ page }) => {
+  test("MT-05 Users can filter with specific criteria", async ({ page }) => {
+    const homePage = new HomePage(page);
+    const bookTicketPage = new BookTicketPage(page);
     const myTicketPage = new MyTicketPage(page);
 
-    // Điều kiện tiên quyết: Filter phải hiển thị (>= 6 vé)
-    const ticketCount = await myTicketPage.getTicketCount();
-    if (ticketCount < 6) test.skip();
+    await test.step("Pre-condition: User books 6 tickets", async () => {
+      for (let i = 0; i < 6; i++) {
+        await homePage.openBookTicketTab();
 
-    await test.step("Scenario 1: Filter by Status", async () => {
-      await myTicketPage.applyFilter({ status: "New" });
-      await myTicketPage.verifyFilterResult("New");
+        // set cứng số lượng book là 1
+        const ticket = new BookTicket(1);
+        await bookTicketPage.bookTicket(ticket);
+      }
     });
 
-    await test.step("Scenario 2: Filter by Depart Station", async () => {
-      await page.reload(); // Reset filter
-      await myTicketPage.applyFilter({ departStation: "Quảng Ngãi" });
-      await myTicketPage.verifyFilterResult("Quảng Ngãi");
-    });
-
-    await test.step("Scenario 3: Filter by Arrive Station", async () => {
+    await homePage.openMyTicketTab();
+    
+    await test.step("Scenario: Filter by Depart Station", async () => {
       await page.reload();
-      await myTicketPage.applyFilter({ arriveStation: "Sài Gòn" });
+      await myTicketPage.applyFilter({ departStation: "1" }); 
       await myTicketPage.verifyFilterResult("Sài Gòn");
     });
 
-    // Bạn có thể thêm Scenario 4 (Date) và Scenario 5 (No result) tương tự
+    await test.step("Scenario: Filter by Arrive Station", async () => {
+      await page.reload();
+      await myTicketPage.applyFilter({ arriveStation: "6" }); 
+      await myTicketPage.verifyFilterResult("Quảng Ngãi");
+    });
   });
 });

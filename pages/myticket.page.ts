@@ -6,34 +6,31 @@ export class MyTicketPage {
   private readonly ticketTable: Locator;
   private readonly filterArea: Locator;
   private readonly btnApplyFilter: Locator;
-  private readonly usernameTxt: Locator;
-  private readonly passwordTxt: Locator;
-  private readonly loginBtn: Locator;
 
-  // Filter Inputs
-  private readonly inputDepartStation: Locator;
-  private readonly inputArriveStation: Locator;
+  private readonly selectDepartStation: Locator;
+  private readonly selectArriveStation: Locator;
   private readonly inputDepartDate: Locator;
-  private readonly selectStatus: Locator; // Giả định status là dropdown
+  private readonly selectStatus: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.usernameTxt = this.page.getByLabel("Email");
-    this.passwordTxt = this.page.getByLabel("Password");
-    this.loginBtn = this.page.getByRole("button", { name: "login" });
-    this.header = this.page.locator("h1"); // Hoặc locator chính xác của header "Manage ticket"
+    this.header = this.page.locator("h1");
     this.ticketTable = this.page.locator("table.MyTable");
-    this.filterArea = this.page.locator(".filter"); // Class bao quanh vùng filter
+    this.filterArea = this.page.locator(".filter");
 
-    // Selector cho Filter (Cần inspect thực tế để map đúng name/id)
-    this.inputDepartStation = this.page.locator(
-      "input[name='FilterDpStation']",
+    this.selectDepartStation = this.page.locator(
+      "select[name='FilterDpStation']",
     );
-    this.inputArriveStation = this.page.locator(
-      "input[name='FilterArStation']",
+    this.selectArriveStation = this.page.locator(
+      "select[name='FilterArStation']",
     );
-    this.inputDepartDate = this.page.locator("input[name='FilterDpDate']");
+
+    // Status cũng thường là dropdown
     this.selectStatus = this.page.locator("select[name='FilterStatus']");
+
+    // Date thường vẫn là input text hoặc datepicker
+    this.inputDepartDate = this.page.locator("input[name='FilterDpDate']");
+
     this.btnApplyFilter = this.page.locator("input[value='Apply Filter']");
   }
 
@@ -42,14 +39,12 @@ export class MyTicketPage {
   }
 
   async getTicketCount(): Promise<number> {
-    // Đếm số dòng tr trong tbody, trừ header
     return (await this.ticketTable.locator("tr").count()) - 1;
   }
 
   async shouldTableDisplayProperly(): Promise<void> {
     await test.step("Verify Ticket table is visible and structured correctly", async () => {
       await expect(this.ticketTable).toBeVisible();
-      // Check header columns exist
       await expect(this.ticketTable.locator("th").first()).toBeVisible();
     });
   }
@@ -61,15 +56,12 @@ export class MyTicketPage {
     });
   }
 
-  // Action: Cancel Ticket
   async cancelTicket(rowIndex: number): Promise<void> {
     await test.step(`Click 'Cancel' button at row ${rowIndex}`, async () => {
-      // Setup listener cho dialog confirm trước khi click
       this.page.once("dialog", async (dialog) => {
         await dialog.accept();
       });
 
-      // Tìm nút Cancel ở dòng thứ rowIndex (cộng 1 vì dòng 0 là header)
       const btnCancel = this.ticketTable
         .locator("tr")
         .nth(rowIndex + 1)
@@ -78,7 +70,6 @@ export class MyTicketPage {
     });
   }
 
-  // Action: Delete Ticket
   async deleteTicket(rowIndex: number): Promise<void> {
     await test.step(`Click 'Delete' button at row ${rowIndex}`, async () => {
       this.page.once("dialog", async (dialog) => {
@@ -92,7 +83,6 @@ export class MyTicketPage {
     });
   }
 
-  // Filter Logic
   async shouldFilterVisible(isVisible: boolean): Promise<void> {
     await test.step(`Verify Filter section visibility is ${isVisible}`, async () => {
       if (isVisible) {
@@ -111,13 +101,16 @@ export class MyTicketPage {
   }): Promise<void> {
     await test.step(`Apply filter with criteria: ${JSON.stringify(criteria)}`, async () => {
       if (criteria.departStation)
-        await this.inputDepartStation.fill(criteria.departStation);
+        await this.selectDepartStation.selectOption(criteria.departStation);
+
       if (criteria.arriveStation)
-        await this.inputArriveStation.fill(criteria.arriveStation);
+        await this.selectArriveStation.selectOption(criteria.arriveStation);
+
       if (criteria.departDate)
         await this.inputDepartDate.fill(criteria.departDate);
+
       if (criteria.status)
-        await this.selectStatus.selectOption({ label: criteria.status }); // Hoặc value tuỳ HTML
+        await this.selectStatus.selectOption(criteria.status);
 
       await this.btnApplyFilter.click();
     });
@@ -128,13 +121,11 @@ export class MyTicketPage {
       const rows = this.ticketTable.locator("tr");
       const count = await rows.count();
 
-      // Nếu không có kết quả (chỉ có header)
       if (count <= 1) {
         console.log("No result found matching criteria.");
         return;
       }
 
-      // Kiểm tra 5 dòng đầu tiên (để tiết kiệm thời gian) hoặc tất cả
       for (let i = 1; i < count; i++) {
         await expect(rows.nth(i)).toContainText(expectedValue);
       }
@@ -147,14 +138,12 @@ export class MyTicketPage {
     );
   }
 
-  // Tìm dòng có nút Delete (nghĩa là vé đã Expired/Cancelled)
   async findIndexOfExpiredTicket(): Promise<number> {
     const rows = await this.ticketTable.locator("tr").count();
     for (let i = 1; i < rows; i++) {
       const row = this.ticketTable.locator("tr").nth(i);
-      // Kiểm tra xem dòng đó có nút Delete không, hoặc status là Expired
       if (await row.getByRole("button", { name: "Delete" }).isVisible()) {
-        return i - 1; // Trả về index logic (0-based)
+        return i - 1;
       }
     }
     return -1;

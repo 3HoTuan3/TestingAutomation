@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 import { test, expect, Locator, Page } from "@playwright/test";
 
->>>>>>> 65f855ef32f3429050d01763c3b4eeb16c162110
 export class HomePage {
   private readonly page: Page;
   private readonly navBarLogin: Locator;
@@ -11,19 +8,22 @@ export class HomePage {
   private readonly navContact: Locator;
   private readonly navLogout: Locator;
   private readonly navMyTicket: Locator;
-
+  private readonly navBookTicket: Locator;
+  private readonly navTicketPrice: Locator;
+  
   constructor(page: Page) {
     this.page = page;
 
-    this.navBarLogin = this.page.getByRole("link", { name: "Login" });
-    this.navChangePassword = this.page.getByRole("link", {
+    this.navBarLogin = page.getByRole("link", { name: "Login" });
+    this.navChangePassword = page.getByRole("link", {
       name: "Change password",
     });
-    this.navRegister = this.page.getByRole("link", { name: "Register" });
-    this.navContact = this.page.getByRole("link", { name: "Contact" });
-    this.navLogout = this.page.getByRole("link", { name: "Log out" });
-
-    this.navMyTicket = this.page.getByRole("link", { name: "My ticket" });
+    this.navRegister = page.getByRole("link", { name: "Register" });
+    this.navContact = page.getByRole("link", { name: "Contact" });
+    this.navLogout = page.getByRole("link", { name: "Log out" });
+    this.navMyTicket = page.getByRole("link", { name: "My ticket" });
+    this.navBookTicket = page.getByRole("link", { name: "Book ticket" });
+    this.navTicketPrice = page.getByRole("link", { name: "Ticket Price" });
   }
 
   async navigateToHomePage(): Promise<void> {
@@ -51,7 +51,27 @@ export class HomePage {
   }
 
   async navigateToContact(): Promise<void> {
-    await this.navContact.click();
+    await test.step("Navigate to Contact Page", async () => {
+      await this.navContact.click();
+    });
+  }
+
+  async openMyTicketTab(): Promise<void> {
+    await test.step("Open My Ticket page", async () => {
+      await this.navMyTicket.click();
+    });
+  }
+  
+  async openTicketPriceTab(): Promise<void> {
+    await test.step("Open Ticket Price page", async () => {
+      await this.navTicketPrice.click();
+    })
+  }
+  
+  async openBookTicketTab(): Promise<void> {
+    await test.step("Open Book Ticket page", async () => {
+      await this.navBookTicket.click();
+    })
   }
 
   async logout(): Promise<void> {
@@ -60,9 +80,10 @@ export class HomePage {
     });
   }
 
-  // Thay đổi: nhận email (tuỳ chọn) và kiểm tra welcome message
   async shouldWelcomeMsgVisible(email: string): Promise<void> {
-    const welcomeMsg = this.page.getByText(`Welcome ${email}`);
-    await expect(welcomeMsg).toBeVisible();
+    await test.step("Verify welcome message is visible", async () => {
+      const welcomeMsg = this.page.getByText(`Welcome ${email}`);
+      await expect(welcomeMsg).toBeVisible();
+    });
   }
 }

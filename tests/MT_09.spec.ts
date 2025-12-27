@@ -2,14 +2,16 @@ import { test } from "@playwright/test";
 import { HomePage } from "../pages/home.page";
 import { LoginPage } from "../pages/login.page";
 import { MyTicketPage } from "../pages/myticket.page";
+import { User } from "../models/user";
 
 test.describe("MT-09 Verify Expired Ticket Status", () => {
   test.beforeEach(async ({ page }) => {
     const homePage = new HomePage(page);
     const loginPage = new LoginPage(page);
+    const user = new User();
     await homePage.navigateToHomePage();
     await homePage.navigateToLogin();
-    await loginPage.login();
+    await loginPage.login(user);
     await homePage.openMyTicketTab();
   });
 
