@@ -14,8 +14,6 @@ export class HomePage {
   private readonly navTicketPrice: Locator;
   private readonly navFaq: Locator;
   private readonly navTimetable: Locator;
-  private readonly navTicketPrice: Locator;
-  private readonly navBookTicket: Locator;
 
   constructor(page: Page) {
     this.page = page;
